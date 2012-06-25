@@ -95,7 +95,7 @@ def auto_detect(dir, cfg):
         detect_season(dir)
 
 def detect_season(integral_folder):
-    re_movie_file = re.compile("[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
+    re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
     os.chdir(integral_folder)
     folder_list = os.listdir()
     other_file = list()
@@ -105,13 +105,13 @@ def detect_season(integral_folder):
                 other_file.append(elt)
             else:
                 del folder_list[i]
-    rename_season(folder_list)
+    folder_list = rename_season(folder_list)
     print(folder_list)
     for elf in folder_list:
         detect_episode(elf)
 
 def detect_episode(season_folder):
-    re_movie_file = re.compile("[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
+    re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
     os.chdir(season_folder)
     file_list = os.listdir()
     episode_list = list()
@@ -131,10 +131,19 @@ def detect_episode(season_folder):
     rename_episode(episode_list)
     print(episode_list)
     os.chdir("..")
-                   
+           
 def rename_season(folder_list):
-    pass
-    
+    new_folder_list = list()
+    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?(?P<id>[0-9]+)")
+    for elt in folder_list:
+        temp_name = elt
+        result = re_season.search(elt.lower())
+        elt = result.group("id")
+        elt = "Season " + elt
+        new_folder_list.append(elt)
+        os.rename(temp_name, elt)
+    return new_folder_list
+
 def rename_episode(episode_list):
     pass
 
