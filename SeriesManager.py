@@ -22,12 +22,12 @@ _CWD_ORIGINE = os.getcwd()
 #-----------------------------------------------------------------------------
 
 def main():
-    print("+-----------------------------+")
+    print("+--------------------------------------------------+")
     file_pref = os.getcwd() + "/pref.cfg"
     if not os.path.isfile(file_pref):
         first_start()
     get_opts()
-    print("+-----------------------------+")
+    print("+--------------------------------------------------+")
         
 def first_start():
     pref = dict()
@@ -169,6 +169,7 @@ def rename_season(folder_list):
 
 def rename_episode(episode_list):
     re_episode = re.compile(r"(e|(episode))[.-]?(?P<id>[0-9]{1,2})")
+    new_name = list()
     for elt in episode_list:
         temp_name = elt
         result = re_episode.search(elt.lower())
@@ -181,8 +182,15 @@ def rename_episode(episode_list):
                 elt = "0{}{}".format(elt, file_extention)
             else:
                 elt = "{}{}".format(elt, file_extention)
-            print("|---> {} ==> {}".format(temp_name, elt))
-            os.rename(temp_name, elt)
+            if not elt in new_name:
+                os.rename(temp_name, elt)
+                new_name.append(elt)
+                print("|---> {} ==> {}".format(temp_name, elt))
+            else:
+                print("||| Episode number \"{}\" already exists.".format(elt),
+                    end="")
+                print(" Please rename the episode manually.")
+                print("|||-->> {}".format(temp_name))
         else:
             print("||| Episode number undetected. ", end="")
             print("Please rename the episode manually.")
