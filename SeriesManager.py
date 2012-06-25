@@ -88,26 +88,34 @@ def auto_detect(dir, cfg):
         dir_cwd = "/".join(dir_cwd) + "/"
         os.chdir(dir_cwd)
     
-    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?[0-9]+")
-    if re_season.search(dir.lower()):
-        detect_episode(dir)
-    else:
+    if os.path.isdir(dir):
         detect_season(dir)
+    else:
+        print("This is not a valid folder.")
 
-def detect_season(integral_folder):
+def detect_season(folder):
+    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?[0-9]+")
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
-    os.chdir(integral_folder)
-    folder_list = os.listdir()
-    other_file = list()
-    for i,elt in enumerate(folder_list):
-        if not os.path.isdir(elt):
-            if re_movie_file.search(elt.lower()):
-                other_file.append(elt)
-            else:
-                del folder_list[i]
-    folder_list = rename_season(folder_list)
-    for elf in folder_list:
-        detect_episode(elf)
+    
+    if re_season.search(folder.lower()):
+        folder_list = list()
+        folder_list.append(folder)
+        folder_list = rename_season(folder_list)
+        detect_episode(folder_list[0])
+    else:
+        os.chdir(folder)
+        folder_list = os.listdir()
+        other_file = list()
+        for i,elt in enumerate(folder_list):
+            if not os.path.isdir(elt):
+                if re_movie_file.search(elt.lower()):
+                    other_file.append(elt)
+                else:
+                    os.remove(elt)
+                    del folder_list[i]
+        folder_list = rename_season(folder_list)
+        for elf in folder_list:
+            detect_episode(elf)
 
 def detect_episode(season_folder):
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
