@@ -59,7 +59,7 @@ def get_opts():
             if os.path.isdir(a):
                 auto_detect(a, cfg)
             else:
-                print("|| This is not a valid folder. ", end="")
+                print("||| This is not a valid folder. ", end="")
                 print("Please see the documentation.")
                 usage()
 
@@ -155,19 +155,20 @@ def detect_episode(season_folder):
            
 def rename_season(folder_list):
     new_folder_list = list()
-    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?(?P<id>[0-9]+)")
+    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?(?P<id>[0-9]{1,2})")
     for elt in folder_list:
         temp_name = elt
         result = re_season.search(elt.lower())
         elt = result.group("id")
-        elt = "Season " + elt
+        elt = int(elt)
+        elt = "Season {}".format(elt)
         new_folder_list.append(elt)
         print("|---> {} ==> {}".format(temp_name, elt))
         os.rename(temp_name, elt)
     return new_folder_list
 
 def rename_episode(episode_list):
-    re_episode = re.compile(r"(e|(episode)|(epi)|(ep))[ .-]?(?P<id>[0-9]+)")
+    re_episode = re.compile(r"(e|(episode))[.-]?(?P<id>[0-9]{1,2})")
     for elt in episode_list:
         temp_name = elt
         result = re_episode.search(elt.lower())
@@ -175,13 +176,17 @@ def rename_episode(episode_list):
             file_extention = elt.split(".")
             file_extention = "." + file_extention[len(file_extention)-1]
             elt = result.group("id")
-            elt = elt + file_extention
+            elt = int(elt)
+            if elt < 10:
+                elt = "0{}{}".format(elt, file_extention)
+            else:
+                elt = "{}{}".format(elt, file_extention)
             print("|---> {} ==> {}".format(temp_name, elt))
             os.rename(temp_name, elt)
         else:
-            print("|| Episode number undetected. ", end="")
+            print("||| Episode number undetected. ", end="")
             print("Please rename the episode manually.")
-            print("||-->>" + str(os.getcwd() + "/" + elt))
+            print("|||-->>" + str(os.getcwd() + "/" + elt))
 
 if __name__ == "__main__":
     main()
