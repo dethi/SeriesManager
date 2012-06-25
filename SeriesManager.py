@@ -106,7 +106,6 @@ def detect_season(integral_folder):
             else:
                 del folder_list[i]
     folder_list = rename_season(folder_list)
-    print(folder_list)
     for elf in folder_list:
         detect_episode(elf)
 
@@ -128,8 +127,9 @@ def detect_episode(season_folder):
         else:
             if re_movie_file.search(elt.lower()):
                 episode_list.append(elt)
+            else:
+                os.remove(elt)
     rename_episode(episode_list)
-    print(episode_list)
     os.chdir("..")
            
 def rename_season(folder_list):
@@ -145,7 +145,20 @@ def rename_season(folder_list):
     return new_folder_list
 
 def rename_episode(episode_list):
-    pass
+    re_episode = re.compile(r"(e|(episode)|(epi)|(ep))[ .-]?(?P<id>[0-9]+)")
+    for elt in episode_list:
+        temp_name = elt
+        result = re_episode.search(elt.lower())
+        if result is not None:
+            file_extention = elt.split(".")
+            file_extention = "." + file_extention[len(file_extention)-1]
+            elt = result.group("id")
+            elt = elt + file_extention
+            os.rename(temp_name, elt)
+        else:
+            print("Episode number undetected. ", end="")
+            print("Please rename the episode manually.")
+            print(str(os.getcwd() + "/" + elt))
 
 if __name__ == "__main__":
     main()
