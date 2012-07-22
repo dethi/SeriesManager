@@ -10,7 +10,7 @@ import re
 # Globals variables
 #-----------------------------------------------------------------------------
 
-_VERSION = "0.1.0"
+_VERSION = "0.0.3"
 _AUTHOR = "Deutsch Thibault"
 _EMAIL = "thibault.deutsch@gmail.com"
 _WEB = "http://www.thionnux.fr/"
@@ -22,6 +22,7 @@ _CWD_ORIGINE = os.getcwd()
 #-----------------------------------------------------------------------------
 
 def main():
+    """Start the script."""
     print("+--------------------------------------------------+")
     file_pref = os.getcwd() + "/pref.cfg"
     if not os.path.isfile(file_pref):
@@ -30,6 +31,7 @@ def main():
     print("+--------------------------------------------------+")
         
 def first_start():
+    """Create config file at first start."""
     pref = dict()
     with open("pref.cfg", "w") as file:
         pref["naming"] = input("Naming : ")
@@ -39,6 +41,7 @@ def first_start():
         file.write(pref_str[1:len(pref_str)-1])
 
 def get_opts():
+    """Addresses the arguments passed to the command line."""
     cfg = read_config()
     
     try:
@@ -70,6 +73,7 @@ def read_config():
     pass
 
 def auto_detect(dir, cfg):
+    """Analyzes the folder supplied as an argument."""
     print("| Starts detection...")
     
     dir.replace("\\", "/")
@@ -92,6 +96,7 @@ def auto_detect(dir, cfg):
     detect_season(dir)
 
 def detect_season(folder):
+    """Detects seasons."""
     re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?[0-9]+")
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
     
@@ -123,6 +128,7 @@ def detect_season(folder):
             detect_episode(elf)
 
 def detect_episode(season_folder):
+    """Detects episodes."""
     print("| Process began in folder \"{}\"".format(season_folder))
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
     os.chdir(season_folder)
@@ -154,6 +160,7 @@ def detect_episode(season_folder):
     os.chdir("..")
            
 def rename_season(folder_list):
+    """Renames seasons."""
     new_folder_list = list()
     re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .-]?(?P<id>[0-9]{1,2})")
     for elt in folder_list:
@@ -168,6 +175,7 @@ def rename_season(folder_list):
     return new_folder_list
 
 def rename_episode(episode_list):
+    """Renames episodes."""
     re_episode = re.compile(r"(e|(episode))[.-]?(?P<id>[0-9]{1,2})")
     new_name = list()
     for elt in episode_list:
