@@ -101,7 +101,8 @@ def get_opts():
     
     for o, a in opts:
         if o == "-v":
-            global VERBOSE = True
+            global VERBOSE
+            VERBOSE = True
         elif o in ("-h", "-help"):
             syntax()
                 
