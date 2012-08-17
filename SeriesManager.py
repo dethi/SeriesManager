@@ -220,7 +220,7 @@ def rename_season(folder_list):
         result = re_season.search(elt.lower())
         elt = result.group("id")
         elt = int(elt)
-        elt = "Saison {}".format(elt)
+        elt = "Season {}".format(elt)
         new_folder_list.append(elt)
         disp.good("{} ==> {}".format(temp_name, elt))
         os.rename(temp_name, elt)
