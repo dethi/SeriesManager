@@ -169,16 +169,21 @@ def detect_season(folder):
             if not os.path.isdir(elt):
                 if re_movie_file.search(elt.lower()):
                     other_file.append(elt)
+                    del folder_list[i]
                 else:
                     disp.info("Removes other files (like .nfo)...")
                     os.remove(elt)
                     disp.good("{}".format(elt))
                     del folder_list[i]
+        if len(other_file) > 0:
+            disp.info("Keep video files (like bonus)...")
+            for elt in other_file:
+                disp.good("{}".format(elt))
         disp.info("Renames folders seasons...")
         folder_list = rename_season(folder_list)
         disp.info("Starts detection of episodes...")
-        for elf in folder_list:
-            detect_episode(elf)
+        for elt in folder_list:
+            detect_episode(elt)
 
 def detect_episode(season_folder):
     """Detects episodes."""
