@@ -17,7 +17,6 @@ _EMAIL = "thibault.deutsch@gmail.com"
 _WEB = "http://www.thionnux.fr/"
 
 _CWD_ORIGINE = os.getcwd()
-#CFG = dict()
 
 VERBOSE = False
 
@@ -70,23 +69,23 @@ class disp:
 def main():
     """Start the script."""
     disp.line()
-    file_pref = os.getcwd() + "/pref.ini"
-    if not os.path.isfile(file_pref):
-        first_start()
+#    file_pref = _CWD_ORIGINE + "/pref.ini"
+#    if not os.path.isfile(file_pref):
+#        first_start()
     get_opts()
     disp.line()
         
-def first_start():
-    """Create config file at first start."""
-    pref = dict()
-    with open("pref.ini", "w") as file:
-        pref["naming"] = input("Naming : ")
-        
-        pref_str = str(pref).replace(", ", "\n").replace(": ", "=")
-        pref_str = pref_str.replace("'", "")
-        file.write(pref_str[1:len(pref_str)-1])
-        
-    syntax()
+#def first_start():
+#    """Create config file at first start."""
+#    pref = dict()
+#    with open("pref.ini", "w") as file:
+#        pref["naming"] = input("Naming : ")
+#        
+#        pref_str = str(pref).replace(", ", "\n").replace(": ", "=")
+#        pref_str = pref_str.replace("'", "")
+#        file.write(pref_str[1:len(pref_str)-1])
+#        
+#    syntax()
     
 
 def get_opts():
@@ -122,29 +121,19 @@ def syntax():
     disp.line()
     sys.exit(0)
 
-def read_config():
-    pass
+#def read_config():
+#    pass
 
 def auto_detect(dir):
     """Analyzes the folder supplied as an argument."""
     disp.info("Starts detection...")
     
-    dir.replace("\\", "/")
     if re.search(r"/{1}$", dir):
         dir = dir[:len(dir)-1]
-    
-    if dir.startswith("/"):
-        dir_cwd = dir.split("/")
-        dir = dir_cwd[len(dir_cwd)-1]
-        dir_cwd = dir_cwd[1:len(dir_cwd)-1]
-        dir_cwd = "/" + "/".join(dir_cwd) + "/"
-        os.chdir(dir_cwd)
-    elif len(dir.split("/")) >= 2:
-        dir_cwd = dir.split("/")
-        dir = dir_cwd[len(dir_cwd)-1]
-        dir_cwd = dir_cwd[:len(dir_cwd)-1]
-        dir_cwd = "/".join(dir_cwd) + "/"
-        os.chdir(dir_cwd)
+        
+    dir_cwd = os.path.dirname(dir)
+    dir = os.path.basename(dir)
+    os.chdir(dir_cwd)
     
     detect_season(dir)
 
