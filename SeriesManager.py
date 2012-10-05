@@ -11,48 +11,53 @@ import re
 # Globals variables
 #-----------------------------------------------------------------------------
 
-_VERSION = "0.0.4"
+_VERSION = "0.0.5"
 _AUTHOR = "Deutsch Thibault"
 _EMAIL = "thibault.deutsch@gmail.com"
 _WEB = "http://www.thionnux.fr/"
 
-_CWD_ORIGINE = os.getcwd()
-
-VERBOSE = False
-
 # Classes
 #-----------------------------------------------------------------------------
 
-class colors:
+class Colors:
     """Defined colors"""
     
-    RED = '\033[91m'
-    GREEN = '\033[92m'
-    NO = '\033[0m'
+    def __init__(self):
+        """Constructor funtion."""
+        if os.name == "posix":
+            self.red = '\033[91m'
+            self.green = '\033[92m'
+            self.no = '\033[0m'
+        else:
+            self.red = ''
+            self.green = ''
+            self.no = ''
     
 class disp:
     """Personnal print-like fonction."""
     
+    verbose = False
+    colors = Colors()
+    
     def verbose(function):
-        """Manages the verbose mode"""
+        """Manages the verbose mode."""
         def verbose_verification(*args, **kwargs):
-            global VERBOSE
-            if VERBOSE:
+            if disp.verbose:
                 return function(*args, **kwargs)
         return verbose_verification
     
     def error(*args, **kwargs):
         """Print error."""
-        print("|" + colors.RED + "|| ", end="")
+        print("|" + disp.colors.red + "|| ", end="")
         print(*args, **kwargs)
-        print(colors.NO, end="")
+        print(disp.colors.no, end="")
         
     @verbose
     def good(*args, **kwargs):
         """Print validation."""
-        print("|" + colors.GREEN + "---> ", end="")
+        print("|" + disp.colors.green + "---> ", end="")
         print(*args, **kwargs)
-        print(colors.NO, end="")
+        print(disp.colors.no, end="")
         
     def info(*args, **kwargs):
         """Print info."""
@@ -69,24 +74,8 @@ class disp:
 def main():
     """Start the script."""
     disp.line()
-#    file_pref = _CWD_ORIGINE + "/pref.ini"
-#    if not os.path.isfile(file_pref):
-#        first_start()
     get_opts()
     disp.line()
-        
-#def first_start():
-#    """Create config file at first start."""
-#    pref = dict()
-#    with open("pref.ini", "w") as file:
-#        pref["naming"] = input("Naming : ")
-#        
-#        pref_str = str(pref).replace(", ", "\n").replace(": ", "=")
-#        pref_str = pref_str.replace("'", "")
-#        file.write(pref_str[1:len(pref_str)-1])
-#        
-#    syntax()
-    
 
 def get_opts():
     """Addresses the arguments passed to the command line."""
@@ -100,8 +89,7 @@ def get_opts():
     
     for o, a in opts:
         if o == "-v":
-            global VERBOSE
-            VERBOSE = True
+            disp.verbose = True
         elif o in ("-h", "-help"):
             syntax()
                 
@@ -120,10 +108,7 @@ def get_opts():
 def syntax():
     disp.line()
     sys.exit(0)
-
-#def read_config():
-#    pass
-
+    
 def auto_detect(dir):
     """Analyzes the folder supplied as an argument."""
     disp.info("Starts detection...")
