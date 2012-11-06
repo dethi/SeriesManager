@@ -22,7 +22,7 @@ _WEB = "http://www.thionnux.fr/"
 
 class Colors:
     """Defined colors"""
-    
+
     def __init__(self):
         """Constructor funtion."""
         if os.name == "posix":
@@ -33,37 +33,37 @@ class Colors:
             self.red = ''
             self.green = ''
             self.no = ''
-    
+
 class disp:
     """Personnal print-like fonction."""
-    
+
     verbose = False
     colors = Colors()
-    
+
     def verbose(function):
         """Manages the verbose mode."""
         def verbose_verification(*args, **kwargs):
             if disp.verbose:
                 return function(*args, **kwargs)
         return verbose_verification
-    
+
     def error(*args, **kwargs):
         """Print error."""
         print("|" + disp.colors.red + "|| ", end="")
         print(*args, **kwargs)
         print(disp.colors.no, end="")
-        
+
     @verbose
     def good(*args, **kwargs):
         """Print validation."""
         print("|" + disp.colors.green + "---> ", end="")
         print(*args, **kwargs)
         print(disp.colors.no, end="")
-        
+
     def info(*args, **kwargs):
         """Print info."""
         print("|", *args, **kwargs)
-        
+
     def line():
         """Print a long line."""
         print("+" + "-" * 70 + "+")
@@ -80,25 +80,25 @@ def main():
 
 def get_opts():
     """Addresses the arguments passed to the command line."""
-    
+
     try:
         opts, args = getopt.getopt(sys.argv[1:], "vh", ["help"])
     except getopt.GetoptError as err:
         disp.error(err)
         disp.line()
         sys.exit(2)
-    
+
     for o, a in opts:
         if o == "-v":
             disp.verbose = True
         elif o in ("-h", "-help"):
             syntax()
-                
+
     if len(args) == 1:
         if os.path.isdir(args[0]):
             auto_detect(args[0])
         else:
-            disp.error("This is not a valid folder.", 
+            disp.error("This is not a valid folder.",
                 "Please see the documentation.")
             syntax()
     else:
@@ -109,27 +109,27 @@ def get_opts():
 def syntax():
     disp.line()
     sys.exit(0)
-    
+
 def auto_detect(dir):
     """Analyzes the folder supplied as an argument."""
     disp.info("Starts detection...")
     disp.info("What is the name of the series ? ", end="")
     name = str(input())
-    
+
     if re.search(r"/{1}$", dir):
         dir = dir[:len(dir)-1]
-        
+
     dir_cwd = os.path.dirname(dir)
     dir = os.path.basename(dir)
     os.chdir(dir_cwd)
-    
+
     detect_season(dir, name)
 
 def detect_season(folder, name):
     """Detects seasons."""
     re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .]?[0-9]+")
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
-    
+
     if re_season.search(folder.lower()):
         disp.info("Folder season detected.")
         folder_list = list()
@@ -161,12 +161,10 @@ def detect_season(folder, name):
                 disp.good("{}".format(elt))
         disp.info("Renames folders seasons...")
         folder_list = rename_season(folder_list, name)
-        
+
         disp.info("Starts detection of episodes...")
-        i = 0
-        for elt in folder_list:
-            detect_episode(elt, name, season[i])
-            i += 1
+        for i in len(folder_list):
+            detect_episode(folder_list[i][0], folder_list[i][1])
 
 def detect_episode(season_folder, name, season):
     """Detects episodes."""
@@ -195,15 +193,14 @@ def detect_episode(season_folder, name, season):
                 disp.info("Removes other files (like .nfo)...")
                 disp.good("{}".format(elt))
                 os.remove(elt)
-    
+
     disp.info("Renames episodes...")
     rename_episode(episode_list, name, season)
     os.chdir("..")
-           
+
 def rename_season(folder_list, name):
     """Renames seasons."""
     new_folder_list = list()
-    season = list()
     re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .]?(?P<id>[0-9]{1,2})")
     for elt in folder_list:
         temp_name = elt
@@ -211,15 +208,16 @@ def rename_season(folder_list, name):
         elt = result.group("id")
         elt = int(elt)
         if elt < 10:
-            season.append("0{}".format(elt))
+            season_number = "0{}".format(elt)
             elt = "{} - S0{}".format(name, elt)
         else:
-            season.append(str(elt))
+            season_number = str(elt)
             elt = "{} - S{}".format(name, elt)
-        new_folder_list.append(elt)
+
+        new_folder_list.append([elt, season_number])
         disp.good("{} ==> {}".format(temp_name, elt))
         os.rename(temp_name, elt)
-    return new_folder_list, season
+    return new_folder_list
 
 def rename_episode(episode_list, name, season):
     """Renames episodes."""
@@ -248,7 +246,7 @@ def rename_episode(episode_list, name, season):
                     "Please rename the episode manually.")
                 disp.error("-->> {}".format(temp_name))
         else:
-            disp.error("Episode number undetected.", 
+            disp.error("Episode number undetected.",
                 "Please rename the episode manually.")
             disp.error("-->> " + str(os.getcwd() + "/" + elt))
 
