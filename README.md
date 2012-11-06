@@ -5,11 +5,11 @@ If you download a lot of series, you've probably notice that the files are named
 This application detects the structure of the folder, and renames all the file with the configuration defined (see « Folder structure »).
 
 ## Folder struture
-Integral folder : [name]
+- Integral folder : [name]
+- Seasons folders : [name] - S01
+- Episodes : [name] - S01E01
 
-Seasons folders : [name] - S01
-
-Episodes : [name] - S01E01
+Example: Touch/Touch - S01/Touch - S01E01.avi
 
 **NOTES:** To switch to the new folder structure, please use the script entitled *switch2new.py*.
 
