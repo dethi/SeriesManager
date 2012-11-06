@@ -6,7 +6,9 @@ This application detects the structure of the folder, and renames all the file w
 
 ## Folder struture
 Integral folder : [name]
+
 Seasons folders : [name] - S01
+
 Episodes : [name] - S01E01
 
 **NOTES:** To switch to the new folder structure, please use the script entitled *switch2new.py*.
