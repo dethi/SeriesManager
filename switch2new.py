@@ -11,7 +11,7 @@ import re
 # Globals variables
 #-----------------------------------------------------------------------------
 
-_VERSION = "0.0.6"
+_VERSION = "0.0.5"
 _AUTHOR = "Deutsch Thibault"
 _EMAIL = "thibault.deutsch@gmail.com"
 _WEB = "http://www.thionnux.fr/"
@@ -127,7 +127,7 @@ def auto_detect(dir):
 
 def detect_season(folder, name):
     """Detects seasons."""
-    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .]?[0-9]+")
+    re_season = re.compile(r"(s[aie]{2}sons?)[ .]?[0-9]+")
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
     
     if re_season.search(folder.lower()):
@@ -204,7 +204,7 @@ def rename_season(folder_list, name):
     """Renames seasons."""
     new_folder_list = list()
     season = list()
-    re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .]?(?P<id>[0-9]{1,2})")
+    re_season = re.compile(r"(s[aie]{2}sons?)[ .]?(?P<id>[0-9]{1,2})")
     for elt in folder_list:
         temp_name = elt
         result = re_season.search(elt.lower())
@@ -223,7 +223,7 @@ def rename_season(folder_list, name):
 
 def rename_episode(episode_list, name, season):
     """Renames episodes."""
-    re_episode = re.compile(r"(e|(ep(isode)?))(?P<id>[0-9]{1,2})")
+    re_episode = re.compile(r"(?P<id>[0-9]{1,2})")
     new_name = list()
     for elt in episode_list:
         temp_name = elt
