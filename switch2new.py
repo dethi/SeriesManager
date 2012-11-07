@@ -146,7 +146,10 @@ def detect_season(folder, name):
         folder_list = os.listdir()
         other_file = list()
         for i,elt in enumerate(folder_list):
-            if not os.path.isdir(elt):
+            if elt.startswith("."):
+                os.remove(elt)
+                del folder_list[i]
+            elif not os.path.isdir(elt):
                 if re_movie_file.search(elt.lower()):
                     other_file.append(elt)
                     del folder_list[i]
@@ -174,7 +177,10 @@ def detect_episode(season_folder, season, name):
     file_list = os.listdir()
     episode_list = list()
     for i,elt in enumerate(file_list):
-        if os.path.isdir(elt):
+        if elt.startswith("."):
+            os.remove(elt)
+            del file_list[i]
+        elif os.path.isdir(elt):
             disp.info("Episode is in separate folders.")
             os.chdir(elt)
             tmp_file_list = os.listdir()
