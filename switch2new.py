@@ -3,6 +3,7 @@
 
 import os
 import sys
+import platform
 import shutil
 import getopt
 import re
@@ -25,7 +26,7 @@ class Colors:
     
     def __init__(self):
         """Constructor funtion."""
-        if os.name == "posix":
+        if platform.system() != "Windows":
             self.red = '\033[91m'
             self.green = '\033[92m'
             self.no = '\033[0m'
