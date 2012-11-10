@@ -122,7 +122,7 @@ def get_opts():
     for o, a in opts:
         if o == "-v":
             disp.verbose = True
-        elif o in ("-h", "-help"):
+        elif o in ("-h", "--help"):
             syntax()
                 
     if len(args) == 1:
@@ -138,6 +138,12 @@ def get_opts():
         syntax()
 
 def syntax():
+    disp.info("Syntax:")
+    disp.info("./rseries.py [options] series_dir")
+    disp.info("")
+    disp.info("Options:")
+    disp.info("    -v    Verbose mode")
+    disp.info("    -h    Print syntax")
     disp.line()
     sys.exit(0)
     
