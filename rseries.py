@@ -71,7 +71,7 @@ class disp:
     verbose = False
     colors = Colors()
     
-    def verbose(function):
+    def verbose_mod(function):
         """Manages the verbose mode."""
         def verbose_verification(*args, **kwargs):
             if disp.verbose:
@@ -84,7 +84,7 @@ class disp:
         print(*args, **kwargs)
         print(disp.colors.no, end="")
         
-    @verbose
+    @verbose_mod
     def good(*args, **kwargs):
         """Print validation."""
         print("|" + disp.colors.green + "---> ", end="")
