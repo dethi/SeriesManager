@@ -39,7 +39,7 @@ __LICENCE__ = "GPL"
 import os
 
 from rseries import *
-    
+
 
 # Functions
 #-----------------------------------------------------------------------------
@@ -51,19 +51,21 @@ def main():
     disp.line()
     print()
     os.system("pause")
-    
+
+
 def get_opts():
     """Addresses the arguments passed to the command line."""
-    
+
     dir = input("| Folder : ")
     disp.verbose = True
-                
+
     if os.path.isdir(dir):
         auto_detect(dir)
     else:
-        disp.error("This is not a valid folder.", 
-            "Please see the documentation.")
+        disp.error(
+            "This is not a valid folder. Please see the documentation.")
         syntax()
+
 
 if __name__ == "__main__":
     main()
