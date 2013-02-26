@@ -43,8 +43,8 @@ from cx_Freeze import setup, Executable
 #-----------------------------------------------------------------------------
 
 setup(
-    name = "SeriesManager",
-    version = "0.1.O",
-    description = "Renames the series downloaded.",
-    executables = [Executable("windows_launcher.py")],
+    name="SeriesManager",
+    version="0.1.O",
+    description="Renames the series downloaded.",
+    executables=[Executable("windows_launcher.py")],
 )

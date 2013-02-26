@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*-coding:Utf-8 -*
 #
-# Applies the new folder structure to the old files processed by 
+# Applies the new folder structure to the old files processed by
 # rseries.py (<= 0.0.5).
 #
 # Syntax:
@@ -54,7 +54,7 @@ import re
 
 class Colors:
     """Defined colors"""
-    
+
     def __init__(self):
         """Constructor funtion."""
         if platform.system() != "Windows":
@@ -65,37 +65,38 @@ class Colors:
             self.red = ''
             self.green = ''
             self.no = ''
-    
+
+
 class disp:
     """Personnal print-like fonction."""
-    
+
     verbose = False
     colors = Colors()
-    
+
     def verbose_mod(function):
         """Manages the verbose mode."""
         def verbose_verification(*args, **kwargs):
             if disp.verbose:
                 return function(*args, **kwargs)
         return verbose_verification
-    
+
     def error(*args, **kwargs):
         """Print error."""
         print("|" + disp.colors.red + "|| ", end="")
         print(*args, **kwargs)
         print(disp.colors.no, end="")
-        
+
     @verbose_mod
     def good(*args, **kwargs):
         """Print validation."""
         print("|" + disp.colors.green + "---> ", end="")
         print(*args, **kwargs)
         print(disp.colors.no, end="")
-        
+
     def info(*args, **kwargs):
         """Print info."""
         print("|", *args, **kwargs)
-        
+
     def line():
         """Print a long line."""
         print("+" + "-" * 70 + "+")
@@ -110,35 +111,37 @@ def main():
     get_opts()
     disp.line()
 
+
 def get_opts():
     """Addresses the arguments passed to the command line."""
-    
+
     try:
         opts, args = getopt.getopt(sys.argv[1:], "vh", ["help"])
     except getopt.GetoptError as err:
         disp.error(err)
         disp.line()
         sys.exit(2)
-    
+
     for o, a in opts:
         if o == "-v":
             disp.verbose = True
         elif o in ("-h", "--help"):
             syntax()
-                
+
     if len(args) == 1:
         if os.path.isdir(args[0]):
             auto_detect(args[0])
         else:
-            disp.error("This is not a valid folder.", 
-                "Please see the documentation.")
+            disp.error(
+                "This is not a valid folder. Please see the documentation.")
             disp.info()
             syntax()
     else:
-        disp.error("You have not specified folder.",
-            "Please see the documentation.")
+        disp.error(
+            "You have not specified folder. Please see the documentation.")
         disp.info()
         syntax()
+
 
 def syntax():
     disp.info("Syntax:")
@@ -149,27 +152,29 @@ def syntax():
     disp.info("    -h    Print syntax")
     disp.line()
     sys.exit(0)
-    
+
+
 def auto_detect(dir):
     """Analyzes the folder supplied as an argument."""
     disp.info("Starts detection...")
     disp.info("What is the name of the series ? ", end="")
     name = str(input())
-    
+
     if re.search(r"/{1}$", dir):
         dir = dir[:len(dir)-1]
-        
+
     dir_cwd = os.path.dirname(dir)
     dir = os.path.basename(dir)
     os.chdir(dir_cwd)
-    
+
     detect_season(dir, name)
+
 
 def detect_season(folder, name):
     """Detects seasons."""
     re_season = re.compile(r"(s|(s[aie]{2}sons?))[ .]?[0-9]+")
     re_movie_file = re.compile(r"[(.avi)(.mkv)(.flv)(.mp4)(.m4v)(.wmv)]$")
-    
+
     if re_season.search(folder.lower()):
         disp.info("Folder season detected.")
         folder_list = list()
@@ -185,7 +190,7 @@ def detect_season(folder, name):
         os.chdir(name)
         folder_list = os.listdir()
         other_file = list()
-        for i,elt in enumerate(folder_list):
+        for i, elt in enumerate(folder_list):
             if elt.startswith("."):
                 os.remove(elt)
                 del folder_list[i]
@@ -204,10 +209,11 @@ def detect_season(folder, name):
                 disp.good("{}".format(elt))
         disp.info("Renames folders seasons...")
         folder_list = rename_season(folder_list, name)
-        
+
         disp.info("Starts detection of episodes...")
         for i in range(len(folder_list)):
             detect_episode(folder_list[i][0], folder_list[i][1], name)
+
 
 def detect_episode(season_folder, season, name):
     """Detects episodes."""
@@ -216,7 +222,7 @@ def detect_episode(season_folder, season, name):
     os.chdir(season_folder)
     file_list = os.listdir()
     episode_list = list()
-    for i,elt in enumerate(file_list):
+    for i, elt in enumerate(file_list):
         if elt.startswith("."):
             os.remove(elt)
             del file_list[i]
@@ -239,11 +245,12 @@ def detect_episode(season_folder, season, name):
                 disp.info("Removes other files (like .nfo)...")
                 disp.good("{}".format(elt))
                 os.remove(elt)
-    
+
     disp.info("Renames episodes...")
     rename_episode(episode_list, season, name)
     os.chdir("..")
-           
+
+
 def rename_season(folder_list, name):
     """Renames seasons."""
     new_folder_list = list()
@@ -266,6 +273,7 @@ def rename_season(folder_list, name):
         os.rename(temp_name, elt)
     return new_folder_list
 
+
 def rename_episode(episode_list, season, name):
     """Renames episodes."""
     re_episode = re.compile(r"(?P<id>[0-9]{1,2})")
@@ -279,21 +287,23 @@ def rename_episode(episode_list, season, name):
             elt = result.group("id")
             elt = int(elt)
             if elt < 10:
-                elt = "{} - S{}E0{}{}".format(name, season, elt,
-                    file_extention)
+                elt = "{} - S{}E0{}{}".format(
+                    name, season, elt, file_extention)
             else:
-                elt = "{} - S{}E{}{}".format(name, season, elt,
-                    file_extention)
+                elt = "{} - S{}E{}{}".format(
+                    name, season, elt, file_extention)
             if not elt in new_name:
                 os.rename(temp_name, elt)
                 new_name.append(elt)
                 disp.good("{} ==> {}".format(temp_name, elt))
             else:
-                disp.error("Episode number \"{}\" already exists.".format(elt),
+                disp.error(
+                    "Episode number \"{}\" already exists.".format(elt),
                     "Please rename the episode manually.")
                 disp.error("-->> {}".format(temp_name))
         else:
-            disp.error("Episode number undetected.", 
+            disp.error(
+                "Episode number undetected.",
                 "Please rename the episode manually.")
             disp.error("-->> " + str(os.getcwd() + "/" + elt))
 
