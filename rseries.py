@@ -33,7 +33,7 @@
 __APPNAME__ = "SeriesManager"
 __VERSION__ = "0.1.0"
 __AUTHOR__ = "Deutsch Thibault <thibault.deutsch@gmail.com>"
-__WEB__ = "http://www.thionnux.fr/"
+__WEB__ = "http://www.dethi.fr/"
 __LICENCE__ = "GPL"
 
 
